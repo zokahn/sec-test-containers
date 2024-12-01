@@ -24,18 +24,28 @@ A simple Python Flask web application running on Python 3.9. This image demonstr
 ### Node.js Application (nodejs-app/)
 A simple Node.js Express web application running on Node.js 16. This image demonstrates a basic web server implementation using JavaScript.
 
+## Architecture Support
+
+All containers support multiple architectures with x86_64 (amd64) as the primary target:
+- linux/amd64 (x86_64) - Primary architecture
+- linux/arm64 (aarch64) - Secondary architecture
+
+The build process uses Docker Buildx to create multi-architecture images, ensuring compatibility across different platforms while maintaining x86_64 as the primary target.
+
 ## Building and Publishing
 
 Each container can be built and published to JFrog Artifactory using the scripts provided in the `scripts/` directory. The workflow includes:
 
-1. Building the container image
-2. Scanning the image for vulnerabilities
-3. Signing the image
-4. Uploading to JFrog Artifactory
+1. Setting up multi-arch builder using Docker Buildx
+2. Building container images for supported architectures
+3. Scanning the images for vulnerabilities
+4. Signing the images
+5. Uploading to JFrog Artifactory
 
 ### Prerequisites
 
 - Docker installed and configured
+- Docker Buildx installed and enabled
 - Access to JFrog Artifactory
 - JFrog CLI installed and configured
 - Docker credentials configured for JFrog Artifactory
@@ -56,6 +66,13 @@ Each container can be built and published to JFrog Artifactory using the scripts
    ./scripts/build-nodejs-app.sh
    ./scripts/build-crazy-bad.sh  # Security testing only!
    ```
+
+Each build script:
+- Creates a multi-arch builder instance
+- Builds images for supported architectures
+- Tags images appropriately
+- Pushes to Artifactory
+- Cleans up build resources
 
 ## Security Testing
 
@@ -92,12 +109,14 @@ The repository includes containers that test different security aspects:
    - Normal operation patterns
    - Standard dependencies
    - Common configurations
+   - Multi-arch compatibility
 
 2. Security Test Case (crazy_bad)
    - Vulnerable packages
    - Security anti-patterns
    - Simulated malicious behavior
    - Runtime anomalies
+   - Architecture information exposure
 
 ## Contributing
 
@@ -107,6 +126,7 @@ When adding new test cases or modifying existing ones, please:
 2. Add appropriate build and upload scripts
 3. Document any special considerations or test cases
 4. Test the full workflow including scanning and signing
+5. Ensure multi-arch support is maintained
 
 ## ⚠️ Security Warning
 
