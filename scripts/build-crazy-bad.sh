@@ -4,7 +4,8 @@ set -e
 # Configuration
 IMAGE_NAME="crazy-bad"
 IMAGE_TAG="latest"
-ARTIFACTORY_REPO="your-docker-repo"
+#ARTIFACTORY_REPO="your-docker-repo"
+ARTIFACTORY_REPO=${JFROG_REPO}
 
 # Create and use a new builder instance with multi-arch support
 echo "Setting up multi-arch builder..."

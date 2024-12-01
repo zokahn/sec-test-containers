@@ -57,6 +57,7 @@ Each container can be built and published to JFrog Artifactory using the scripts
    export JFROG_USER=your-username
    export JFROG_PASS=your-password
    export JFROG_URL=your-artifactory-url
+   export JFROG_REPO=your-repo
    ```
 
 2. Use the build scripts to build and publish individual images:
