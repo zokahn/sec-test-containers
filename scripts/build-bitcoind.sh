@@ -4,32 +4,20 @@ set -e
 # Configuration
 IMAGE_NAME="bitcoind"
 IMAGE_TAG="latest"
-ARTIFACTORY_REPO=${JFROG_REPO}
+ARTIFACTORY_REPO="${JFROG_URL}/docker-local"
 
 # Create and use a new builder instance with multi-arch support
 echo "Setting up multi-arch builder..."
 docker buildx create --name multiarch-builder --use || true
 docker buildx inspect multiarch-builder --bootstrap
 
-# Build the image for multiple architectures
+# Build and push the image for multiple architectures
 echo "Building ${IMAGE_NAME} for multiple architectures..."
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
-  --tag ${IMAGE_NAME}:${IMAGE_TAG} \
-  --load \
+  --tag "${ARTIFACTORY_REPO}/${IMAGE_NAME}:${IMAGE_TAG}" \
+  --push \
   ../bitcoind/
-
-# Tag for Artifactory
-ARTIFACTORY_IMAGE="${JFROG_URL}/${ARTIFACTORY_REPO}/${IMAGE_NAME}:${IMAGE_TAG}"
-docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${ARTIFACTORY_IMAGE}
-
-# Login to Artifactory
-echo "Logging into Artifactory..."
-echo "${JFROG_PASS}" | docker login ${JFROG_URL} -u ${JFROG_USER} --password-stdin
-
-# Push to Artifactory
-echo "Pushing to Artifactory..."
-docker push ${ARTIFACTORY_IMAGE}
 
 # Clean up
 docker buildx rm multiarch-builder

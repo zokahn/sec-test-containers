@@ -26,7 +26,7 @@ A simple Node.js Express web application running on Node.js 16. This image demon
 
 ## Architecture Support
 
-All containers support multiple architectures with x86_64 (amd64) as the primary target:
+All containers support multiple architectures:
 - linux/amd64 (x86_64) - Primary architecture
 - linux/arm64 (aarch64) - Secondary architecture
 
@@ -40,39 +40,36 @@ Each container can be built and published to JFrog Artifactory using the scripts
 2. Building container images for supported architectures
 3. Scanning the images for vulnerabilities
 4. Signing the images
-5. Uploading to JFrog Artifactory
+5. Pushing to JFrog Artifactory
 
 ### Prerequisites
 
 - Docker installed and configured
 - Docker Buildx installed and enabled
 - Access to JFrog Artifactory
-- JFrog CLI installed and configured
 - Docker credentials configured for JFrog Artifactory
+
+### Environment Setup
+
+Set up your JFrog Artifactory credentials:
+```bash
+export JFROG_URL="your-artifactory-url"  # e.g., "artifactory.example.com"
+```
 
 ### Usage
 
-1. Set up your JFrog Artifactory credentials:
-   ```bash
-   export JFROG_USER=your-username
-   export JFROG_PASS=your-password
-   export JFROG_URL=your-artifactory-url
-   export JFROG_REPO=your-repo
-   ```
-
-2. Use the build scripts to build and publish individual images:
-   ```bash
-   ./scripts/build-bitcoind.sh
-   ./scripts/build-flask-app.sh
-   ./scripts/build-nodejs-app.sh
-   ./scripts/build-crazy-bad.sh  # Security testing only!
-   ```
+Use the build scripts to build and publish individual images:
+```bash
+./scripts/build-bitcoind.sh
+./scripts/build-flask-app.sh
+./scripts/build-nodejs-app.sh
+./scripts/build-crazy-bad.sh  # Security testing only!
+```
 
 Each build script:
 - Creates a multi-arch builder instance
-- Builds images for supported architectures
-- Tags images appropriately
-- Pushes to Artifactory
+- Builds images for supported architectures (amd64, arm64)
+- Pushes directly to Artifactory with multi-arch support
 - Cleans up build resources
 
 ## Security Testing
